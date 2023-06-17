@@ -26,4 +26,8 @@ export class TrainingService {
       });
     }
   }
+
+  getRunningExercise() {
+    return { ...this.runningExercise };
+  }
 }
