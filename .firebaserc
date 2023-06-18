@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ng-fitness-tracker-c7da3": {
+      "hosting": {
+        "angular-material": [
+          "ng-fitness-tracker-c7da3"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "ng-fitness-tracker-c7da3"
+  }
+}
