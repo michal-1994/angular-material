@@ -12,7 +12,7 @@ import { TrainingService } from '../training.service';
   styleUrls: ['./new-training.component.css'],
 })
 export class NewTrainingComponent implements OnInit {
-  exercises$: Observable<Exercise[]> | undefined;
+  exercises$: Observable<Exercise[]>;
   firestore: Firestore = inject(Firestore);
   exercises: Exercise[] = [];
 
