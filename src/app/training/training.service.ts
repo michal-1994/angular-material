@@ -1,15 +1,15 @@
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
-import { Subject } from 'rxjs';
+import { Firestore, collection } from '@angular/fire/firestore';
+import { doc, setDoc, getDocs } from 'firebase/firestore';
+
+import { Subject, Observable } from 'rxjs';
 import { Exercise } from './exercise.model';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TrainingService {
   exerciseChanged = new Subject<Exercise | null>();
   exercisesChanged = new Subject<Exercise[]>();
 
-  firestore: Firestore = inject(Firestore);
   exercises$: Observable<Exercise[]> | undefined;
 
   private availableExercises: Exercise[] = [];
@@ -18,14 +18,23 @@ export class TrainingService {
 
   constructor(private db: Firestore) {}
 
-  fetchAvailableExercises() {
-    const itemCollection = collection(this.firestore, 'availableExercises');
-    this.exercises$ = collectionData(itemCollection) as Observable<Exercise[]>;
+  async fetchAvailableExercises() {
+    const docArray: Exercise[] = [];
+    const querySnapshot = await getDocs(
+      collection(this.db, 'availableExercises')
+    );
 
-    this.exercises$.subscribe((exercises: Exercise[]) => {
-      this.availableExercises = exercises;
-      this.exercisesChanged.next([...this.availableExercises]);
+    querySnapshot.forEach((doc) => {
+      docArray.push({
+        id: doc.id,
+        name: doc.data()['name'],
+        duration: doc.data()['duration'],
+        calories: doc.data()['calories'],
+      });
     });
+
+    this.availableExercises = docArray;
+    this.exercisesChanged.next([...this.availableExercises]);
   }
 
   startExercise(selectedId: string) {
@@ -41,7 +50,7 @@ export class TrainingService {
 
   completeExercise() {
     if (this.runningExercise) {
-      this.exercises.push({
+      this.addDataToDatabase({
         ...this.runningExercise,
         date: new Date(),
         state: 'completed',
@@ -53,7 +62,7 @@ export class TrainingService {
 
   cancelExercise(progress: number) {
     if (this.runningExercise) {
-      this.exercises.push({
+      this.addDataToDatabase({
         ...this.runningExercise,
         duration: this.runningExercise.duration * (progress / 100),
         calories: this.runningExercise.calories * (progress / 100),
@@ -71,5 +80,10 @@ export class TrainingService {
 
   getCompletedOrCancelledExercises() {
     return this.exercises.slice();
+  }
+
+  private addDataToDatabase(exercise: Exercise) {
+    const finishedExercises = doc(collection(this.db, 'finishedExercises'));
+    setDoc(finishedExercises, exercise);
   }
 }
