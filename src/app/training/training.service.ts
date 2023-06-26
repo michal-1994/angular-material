@@ -9,34 +9,34 @@ import { Injectable } from '@angular/core';
 export class TrainingService {
   exerciseChanged = new Subject<Exercise | null>();
   exercisesChanged = new Subject<Exercise[]>();
+  finishedExercisesChanged = new Subject<Exercise[]>();
 
   exercises$: Observable<Exercise[]> | undefined;
 
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | undefined | null;
-  private exercises: Exercise[] = [];
 
   constructor(private db: Firestore) {}
 
   async fetchAvailableExercises() {
     const docArray: Exercise[] = [];
-    await getDocs(
-      collection(this.db, 'availableExercises')
-    ).then((querySnapshot) => {
-      console.log(querySnapshot);
 
-      querySnapshot.forEach((doc) => {
-        docArray.push({
-          id: doc.id,
-          name: doc.data()['name'],
-          duration: doc.data()['duration'],
-          calories: doc.data()['calories'],
+    await getDocs(collection(this.db, 'availableExercises')).then(
+      (querySnapshot) => {
+
+        querySnapshot.forEach((doc) => {
+          docArray.push({
+            id: doc.id,
+            name: doc.data()['name'],
+            duration: doc.data()['duration'],
+            calories: doc.data()['calories'],
+          });
         });
-      });
 
-      this.availableExercises = docArray;
-      this.exercisesChanged.next([...this.availableExercises]);
-    });
+        this.availableExercises = docArray;
+        this.exercisesChanged.next([...this.availableExercises]);
+      }
+    );
   }
 
   startExercise(selectedId: string) {
@@ -80,12 +80,27 @@ export class TrainingService {
     return { ...this.runningExercise };
   }
 
-  getCompletedOrCancelledExercises() {
-    return this.exercises.slice();
+  async fetchCompletedOrCancelledExercises() {
+    const finishedExercisesArray: Exercise[] = [];
+
+    await getDocs(collection(this.db, 'finishedExercises')).then(
+      (querySnapshot) => {
+
+        querySnapshot.forEach((doc) => {
+          finishedExercisesArray.push({
+            id: doc.id,
+            name: doc.data()['name'],
+            duration: doc.data()['duration'],
+            calories: doc.data()['calories'],
+          });
+        });
+
+        this.finishedExercisesChanged.next(finishedExercisesArray);
+      }
+    );
   }
 
   private addDataToDatabase(exercise: Exercise) {
-    const finishedExercises = doc(collection(this.db, 'finishedExercises'));
-    setDoc(finishedExercises, exercise);
+    setDoc(doc(collection(this.db, 'finishedExercises')), exercise);
   }
 }
