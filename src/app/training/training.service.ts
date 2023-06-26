@@ -1,5 +1,5 @@
 import { Firestore, collection } from '@angular/fire/firestore';
-import { doc, setDoc, getDocs } from 'firebase/firestore';
+import { doc, setDoc, getDocs, updateDoc } from 'firebase/firestore';
 
 import { Subject, Observable } from 'rxjs';
 import { Exercise } from './exercise.model';
@@ -23,7 +23,6 @@ export class TrainingService {
 
     await getDocs(collection(this.db, 'availableExercises')).then(
       (querySnapshot) => {
-
         querySnapshot.forEach((doc) => {
           docArray.push({
             id: doc.id,
@@ -39,7 +38,15 @@ export class TrainingService {
     );
   }
 
+  // async startExercise(selectedId: string) {
   startExercise(selectedId: string) {
+    // await updateDoc(
+    //   doc(this.db, 'availableExercises', selectedId),
+    //   {
+    //     lastSelected: new Date(),
+    //   }
+    // );
+
     this.runningExercise = this.availableExercises.find(
       (ex) => ex.id === selectedId
     );
@@ -85,7 +92,6 @@ export class TrainingService {
 
     await getDocs(collection(this.db, 'finishedExercises')).then(
       (querySnapshot) => {
-
         querySnapshot.forEach((doc) => {
           finishedExercisesArray.push({
             id: doc.id,
