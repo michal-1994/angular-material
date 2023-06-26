@@ -20,21 +20,23 @@ export class TrainingService {
 
   async fetchAvailableExercises() {
     const docArray: Exercise[] = [];
-    const querySnapshot = await getDocs(
+    await getDocs(
       collection(this.db, 'availableExercises')
-    );
+    ).then((querySnapshot) => {
+      console.log(querySnapshot);
 
-    querySnapshot.forEach((doc) => {
-      docArray.push({
-        id: doc.id,
-        name: doc.data()['name'],
-        duration: doc.data()['duration'],
-        calories: doc.data()['calories'],
+      querySnapshot.forEach((doc) => {
+        docArray.push({
+          id: doc.id,
+          name: doc.data()['name'],
+          duration: doc.data()['duration'],
+          calories: doc.data()['calories'],
+        });
       });
-    });
 
-    this.availableExercises = docArray;
-    this.exercisesChanged.next([...this.availableExercises]);
+      this.availableExercises = docArray;
+      this.exercisesChanged.next([...this.availableExercises]);
+    });
   }
 
   startExercise(selectedId: string) {
