@@ -15,8 +15,7 @@ export class AuthService {
 
   registerUser(authData: AuthData) {
     createUserWithEmailAndPassword(this.auth, authData.email, authData.password)
-      .then((userCredential) => {
-        console.log(userCredential);
+      .then(() => {
         this.authSuccessfully();
       })
       .catch((error) => {
@@ -26,8 +25,7 @@ export class AuthService {
 
   login(authData: AuthData) {
     signInWithEmailAndPassword(this.auth, authData.email, authData.password)
-      .then((userCredential) => {
-        console.log(userCredential);
+      .then(() => {
         this.authSuccessfully();
       })
       .catch((error) => {

@@ -1,6 +1,5 @@
 import { Firestore, collection } from '@angular/fire/firestore';
 import { doc, setDoc, getDocs } from 'firebase/firestore';
-
 import { Subject, Observable } from 'rxjs';
 import { Exercise } from './exercise.model';
 import { Injectable } from '@angular/core';
@@ -21,8 +20,8 @@ export class TrainingService {
   async fetchAvailableExercises() {
     const docArray: Exercise[] = [];
 
-    await getDocs(collection(this.db, 'availableExercises')).then(
-      (querySnapshot) => {
+    await getDocs(collection(this.db, 'availableExercises'))
+      .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           docArray.push({
             id: doc.id,
@@ -34,19 +33,13 @@ export class TrainingService {
 
         this.availableExercises = docArray;
         this.exercisesChanged.next([...this.availableExercises]);
-      }
-    );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
-  // async startExercise(selectedId: string) {
   startExercise(selectedId: string) {
-    // await updateDoc(
-    //   doc(this.db, 'availableExercises', selectedId),
-    //   {
-    //     lastSelected: new Date(),
-    //   }
-    // );
-
     this.runningExercise = this.availableExercises.find(
       (ex) => ex.id === selectedId
     );
@@ -90,8 +83,8 @@ export class TrainingService {
   async fetchCompletedOrCancelledExercises() {
     const finishedExercisesArray: Exercise[] = [];
 
-    await getDocs(collection(this.db, 'finishedExercises')).then(
-      (querySnapshot) => {
+    await getDocs(collection(this.db, 'finishedExercises'))
+      .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           finishedExercisesArray.push({
             id: doc.id,
@@ -102,8 +95,10 @@ export class TrainingService {
         });
 
         this.finishedExercisesChanged.next(finishedExercisesArray);
-      }
-    );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   private addDataToDatabase(exercise: Exercise) {
