@@ -1,5 +1,5 @@
 import { Firestore, collection } from '@angular/fire/firestore';
-import { doc, setDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDocs } from 'firebase/firestore';
 
 import { Subject, Observable } from 'rxjs';
 import { Exercise } from './exercise.model';

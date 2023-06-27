@@ -1,22 +1,30 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { User } from './user.model';
+import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
+import { Auth } from '@angular/fire/auth';
 
 @Injectable()
 export class AuthService {
   authChange = new Subject<boolean>();
   private user!: User | null;
+  private auth: Auth = inject(Auth);
 
   constructor(private router: Router) {}
 
   registerUser(authData: AuthData) {
-    this.user = {
-      email: authData.email,
-      userId: Math.round(Math.random() * 10000).toString(),
-    };
-    this.authSuccessfully();
+    const auth = getAuth();
+
+    createUserWithEmailAndPassword(auth, authData.email, authData.password)
+      .then((userCredential) => {
+        console.log(userCredential);
+        this.authSuccessfully();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   login(authData: AuthData) {
