@@ -3,6 +3,7 @@ import { doc, setDoc, getDocs } from 'firebase/firestore';
 import { Subject, Observable } from 'rxjs';
 import { Exercise } from './exercise.model';
 import { Injectable } from '@angular/core';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -15,13 +16,15 @@ export class TrainingService {
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | undefined | null;
 
-  constructor(private db: Firestore) {}
+  constructor(private db: Firestore, private uiservice: UIService) {}
 
   async fetchAvailableExercises() {
     const docArray: Exercise[] = [];
+    this.uiservice.loadingStateChanged.next(true);
 
     await getDocs(collection(this.db, 'availableExercises'))
       .then((querySnapshot) => {
+        this.uiservice.loadingStateChanged.next(false);
         querySnapshot.forEach((doc) => {
           docArray.push({
             id: doc.id,
@@ -35,6 +38,7 @@ export class TrainingService {
         this.exercisesChanged.next([...this.availableExercises]);
       })
       .catch((error) => {
+        this.uiservice.loadingStateChanged.next(false);
         console.error(error);
       });
   }
