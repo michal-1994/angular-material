@@ -19,6 +19,7 @@ export class AuthGuard {
       return false;
     }
   }
+
 }
 
 export const canActivateTraining: CanActivateFn = (
