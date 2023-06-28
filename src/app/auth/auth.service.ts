@@ -5,6 +5,7 @@ import { AuthData } from './auth-data.model';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class AuthService {
@@ -12,14 +13,21 @@ export class AuthService {
   private isAuthenticated: boolean = false;
   private auth: Auth = inject(Auth);
 
-  constructor(private router: Router, private snackbar: MatSnackBar) {}
+  constructor(
+    private router: Router,
+    private snackbar: MatSnackBar,
+    private uiservice: UIService
+  ) {}
 
   registerUser(authData: AuthData) {
+    this.uiservice.loadingStateChanged.next(true);
     createUserWithEmailAndPassword(this.auth, authData.email, authData.password)
       .then(() => {
+        this.uiservice.loadingStateChanged.next(false);
         this.authSuccessfully();
       })
       .catch((error) => {
+        this.uiservice.loadingStateChanged.next(false);
         this.snackbar.open(error.message, undefined, {
           duration: 3000,
         });
@@ -27,11 +35,14 @@ export class AuthService {
   }
 
   login(authData: AuthData) {
+    this.uiservice.loadingStateChanged.next(true);
     signInWithEmailAndPassword(this.auth, authData.email, authData.password)
       .then(() => {
+        this.uiservice.loadingStateChanged.next(false);
         this.authSuccessfully();
       })
       .catch((error) => {
+        this.uiservice.loadingStateChanged.next(false);
         this.snackbar.open(error.message, undefined, {
           duration: 3000,
         });
