@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UIService } from '../shared/ui.service';
 
 @Injectable()
@@ -13,11 +12,7 @@ export class AuthService {
   private isAuthenticated: boolean = false;
   private auth: Auth = inject(Auth);
 
-  constructor(
-    private router: Router,
-    private snackbar: MatSnackBar,
-    private uiservice: UIService
-  ) {}
+  constructor(private router: Router, private uiservice: UIService) {}
 
   registerUser(authData: AuthData) {
     this.uiservice.loadingStateChanged.next(true);
@@ -28,9 +23,7 @@ export class AuthService {
       })
       .catch((error) => {
         this.uiservice.loadingStateChanged.next(false);
-        this.snackbar.open(error.message, undefined, {
-          duration: 3000,
-        });
+        this.uiservice.showSnackBar(error.message, null, 3000);
       });
   }
 
@@ -43,9 +36,7 @@ export class AuthService {
       })
       .catch((error) => {
         this.uiservice.loadingStateChanged.next(false);
-        this.snackbar.open(error.message, undefined, {
-          duration: 3000,
-        });
+        this.uiservice.showSnackBar(error.message, null, 3000);
       });
   }
 
