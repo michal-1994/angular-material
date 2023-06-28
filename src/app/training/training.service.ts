@@ -8,7 +8,7 @@ import { UIService } from '../shared/ui.service';
 @Injectable()
 export class TrainingService {
   exerciseChanged = new Subject<Exercise | null>();
-  exercisesChanged = new Subject<Exercise[]>();
+  exercisesChanged = new Subject<Exercise[] | null>();
   finishedExercisesChanged = new Subject<Exercise[]>();
 
   exercises$: Observable<Exercise[]> | undefined;
@@ -39,6 +39,12 @@ export class TrainingService {
       })
       .catch((error) => {
         this.uiservice.loadingStateChanged.next(false);
+        this.uiservice.showSnackBar(
+          'Fetching Exercises failed, please try again later',
+          null,
+          3000
+        );
+        this.exercisesChanged.next(null);
         console.error(error);
       });
   }

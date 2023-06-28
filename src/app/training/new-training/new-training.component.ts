@@ -11,7 +11,7 @@ import { TrainingService } from '../training.service';
   styleUrls: ['./new-training.component.css'],
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
-  exercises!: Exercise[];
+  exercises!: Exercise[] | null;
   exerciseSubscription!: Subscription;
 
   isLoading: boolean = false;
@@ -34,6 +34,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.exercises = exercises;
       }
     );
+    this.fetchExercises();
+  }
+
+  fetchExercises() {
     this.trainingService.fetchAvailableExercises();
   }
 
