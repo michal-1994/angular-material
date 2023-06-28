@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
   private isAuthenticated: boolean = false;
   private auth: Auth = inject(Auth);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private snackbar: MatSnackBar) {}
 
   registerUser(authData: AuthData) {
     createUserWithEmailAndPassword(this.auth, authData.email, authData.password)
@@ -19,7 +20,9 @@ export class AuthService {
         this.authSuccessfully();
       })
       .catch((error) => {
-        console.log(error);
+        this.snackbar.open(error.message, undefined, {
+          duration: 3000,
+        });
       });
   }
 
@@ -29,7 +32,9 @@ export class AuthService {
         this.authSuccessfully();
       })
       .catch((error) => {
-        console.log(error);
+        this.snackbar.open(error.message, undefined, {
+          duration: 3000,
+        });
       });
   }
 
