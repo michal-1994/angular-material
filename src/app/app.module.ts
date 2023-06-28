@@ -13,7 +13,6 @@ import { TrainingService } from './training/training.service';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { UIService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
-import { TrainingModule } from './training/training.module';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from 'src/environments/environment';
 
@@ -28,7 +27,6 @@ import { environment } from 'src/environments/environment';
     BrowserModule,
     BrowserAnimationsModule,
     AuthModule,
-    TrainingModule,
     FlexLayoutModule,
     MaterialModule,
     AppRoutingModule,
