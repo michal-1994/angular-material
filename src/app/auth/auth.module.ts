@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
@@ -14,6 +15,7 @@ import { SignupComponent } from './signup/signup.component';
     ReactiveFormsModule,
     MaterialModule,
     FlexLayoutModule,
+    provideAuth(() => getAuth()),
   ],
   exports: [],
 })
