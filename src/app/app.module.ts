@@ -27,11 +27,11 @@ import { environment } from 'src/environments/environment';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     AuthModule,
     TrainingModule,
     FlexLayoutModule,
     MaterialModule,
+    AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
   ],
