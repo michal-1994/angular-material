@@ -9,7 +9,6 @@ const routes: Routes = [
     path: '',
     component: WelcomeComponent,
   },
-
   {
     path: 'training',
     component: TrainingComponent,
