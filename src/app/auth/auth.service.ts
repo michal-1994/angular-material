@@ -5,6 +5,8 @@ import { AuthData } from './auth-data.model';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { UIService } from '../shared/ui.service';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../app.reducer';
 
 @Injectable()
 export class AuthService {
@@ -12,30 +14,34 @@ export class AuthService {
   private isAuthenticated: boolean = false;
   private auth: Auth = inject(Auth);
 
-  constructor(private router: Router, private uiservice: UIService) {}
+  constructor(
+    private router: Router,
+    private uiservice: UIService,
+    private store: Store<{ ui: fromApp.State }>
+  ) {}
 
   registerUser(authData: AuthData) {
-    this.uiservice.loadingStateChanged.next(true);
+    this.store.dispatch({ type: 'START_LOADING' });
     createUserWithEmailAndPassword(this.auth, authData.email, authData.password)
       .then(() => {
-        this.uiservice.loadingStateChanged.next(false);
+        this.store.dispatch({ type: 'STOP_LOADING' });
         this.authSuccessfully();
       })
       .catch((error) => {
-        this.uiservice.loadingStateChanged.next(false);
+        this.store.dispatch({ type: 'STOP_LOADING' });
         this.uiservice.showSnackBar(error.message, null, 3000);
       });
   }
 
   login(authData: AuthData) {
-    this.uiservice.loadingStateChanged.next(true);
+    this.store.dispatch({ type: 'START_LOADING' });
     signInWithEmailAndPassword(this.auth, authData.email, authData.password)
       .then(() => {
-        this.uiservice.loadingStateChanged.next(false);
+        this.store.dispatch({ type: 'STOP_LOADING' });
         this.authSuccessfully();
       })
       .catch((error) => {
-        this.uiservice.loadingStateChanged.next(false);
+        this.store.dispatch({ type: 'STOP_LOADING' });
         this.uiservice.showSnackBar(error.message, null, 3000);
       });
   }
