@@ -16,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from 'src/environments/environment';
 import { StoreModule } from '@ngrx/store';
-import { appReducer } from './app.reducer';
+import { reducers } from './app.reducer';
 
 @NgModule({
   declarations: [
@@ -32,7 +32,7 @@ import { appReducer } from './app.reducer';
     FlexLayoutModule,
     MaterialModule,
     AppRoutingModule,
-    StoreModule.forRoot({ ui: appReducer }),
+    StoreModule.forRoot(reducers),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
   ],
