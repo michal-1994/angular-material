@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
@@ -8,11 +7,10 @@ import { UIService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../app.reducer';
 import * as UI from '../shared/ui.actions';
+import * as AuthActions from '../auth/auth.actions';
 
 @Injectable()
 export class AuthService {
-  authChange = new Subject<boolean>();
-  private isAuthenticated: boolean = false;
   private auth: Auth = inject(Auth);
 
   constructor(
@@ -48,18 +46,12 @@ export class AuthService {
   }
 
   logout() {
-    this.authChange.next(false);
+    this.store.dispatch(new AuthActions.SetAuthenticated());
     this.router.navigate(['/login']);
-    this.isAuthenticated = false;
-  }
-
-  isAuth() {
-    return this.isAuthenticated;
   }
 
   private authSuccessfully() {
-    this.isAuthenticated = true;
-    this.authChange.next(true);
+    this.store.dispatch(new AuthActions.SetUnauthenticated());
     this.router.navigate(['/training']);
   }
 }
