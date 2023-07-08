@@ -3,7 +3,6 @@ import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { UIService } from 'src/app/shared/ui.service';
 import { AuthService } from '../auth.service';
 import * as fromRoot from '../../app.reducer';
 
@@ -18,7 +17,6 @@ export class SignupComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private uiservice: UIService,
     private store: Store<fromRoot.State>
   ) {}
 

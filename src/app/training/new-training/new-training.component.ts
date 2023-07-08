@@ -3,10 +3,9 @@ import { NgForm } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Exercise } from '../exercise.model';
-import { UIService } from 'src/app/shared/ui.service';
 import { TrainingService } from '../training.service';
 import * as fromRoot from '../../app.reducer';
+import { Exercise } from '../exercise.model';
 
 @Component({
   selector: 'app-new-training',
@@ -21,7 +20,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   constructor(
     private trainingService: TrainingService,
-    private uiservice: UIService,
     private store: Store<fromRoot.State>
   ) {}
 
