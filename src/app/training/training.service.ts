@@ -1,9 +1,13 @@
 import { Firestore, collection } from '@angular/fire/firestore';
 import { doc, setDoc, getDocs } from 'firebase/firestore';
 import { Subject, Observable } from 'rxjs';
-import { Exercise } from './exercise.model';
 import { Injectable } from '@angular/core';
+
+import { Exercise } from './exercise.model';
 import { UIService } from '../shared/ui.service';
+import * as UI from '../shared/ui.actions';
+import * as fromRoot from '../app.reducer';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class TrainingService {
@@ -16,15 +20,19 @@ export class TrainingService {
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | undefined | null;
 
-  constructor(private db: Firestore, private uiservice: UIService) {}
+  constructor(
+    private db: Firestore,
+    private uiservice: UIService,
+    private store: Store<fromRoot.State>
+  ) {}
 
   async fetchAvailableExercises() {
+    this.store.dispatch(new UI.StartLoading());
     const docArray: Exercise[] = [];
-    this.uiservice.loadingStateChanged.next(true);
 
     await getDocs(collection(this.db, 'availableExercises'))
       .then((querySnapshot) => {
-        this.uiservice.loadingStateChanged.next(false);
+        this.store.dispatch(new UI.StopLoading());
         querySnapshot.forEach((doc) => {
           docArray.push({
             id: doc.id,
@@ -38,7 +46,7 @@ export class TrainingService {
         this.exercisesChanged.next([...this.availableExercises]);
       })
       .catch((error) => {
-        this.uiservice.loadingStateChanged.next(false);
+        this.store.dispatch(new UI.StopLoading());
         this.uiservice.showSnackBar(
           'Fetching Exercises failed, please try again later',
           null,
