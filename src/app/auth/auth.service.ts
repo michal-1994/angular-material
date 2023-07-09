@@ -46,12 +46,12 @@ export class AuthService {
   }
 
   logout() {
-    this.store.dispatch(new AuthActions.SetAuthenticated());
+    this.store.dispatch(new AuthActions.SetUnauthenticated());
     this.router.navigate(['/login']);
   }
 
   private authSuccessfully() {
-    this.store.dispatch(new AuthActions.SetUnauthenticated());
+    this.store.dispatch(new AuthActions.SetAuthenticated());
     this.router.navigate(['/training']);
   }
 }
