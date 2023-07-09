@@ -1,6 +1,6 @@
 import { Firestore, collection } from '@angular/fire/firestore';
 import { doc, setDoc, getDocs } from 'firebase/firestore';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, take } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import { Exercise } from './exercise.model';
@@ -62,27 +62,37 @@ export class TrainingService {
   }
 
   completeExercise() {
-    if (this.runningExercise) {
-      this.addDataToDatabase({
-        ...this.runningExercise,
-        date: new Date(),
-        state: 'completed',
+    this.store
+      .select(fromTraining.getActiveTraining)
+      .pipe(take(1))
+      .subscribe((ex) => {
+        if (this.runningExercise) {
+          this.addDataToDatabase({
+            ...ex!,
+            date: new Date(),
+            state: 'completed',
+          });
+        }
+        this.store.dispatch(new Training.StopTraining());
       });
-    }
-    this.store.dispatch(new Training.StopTraining());
   }
 
   cancelExercise(progress: number) {
-    if (this.runningExercise) {
-      this.addDataToDatabase({
-        ...this.runningExercise,
-        duration: this.runningExercise.duration * (progress / 100),
-        calories: this.runningExercise.calories * (progress / 100),
-        date: new Date(),
-        state: 'cancelled',
+    this.store
+      .select(fromTraining.getActiveTraining)
+      .pipe(take(1))
+      .subscribe((ex) => {
+        if (this.runningExercise) {
+          this.addDataToDatabase({
+            ...ex!,
+            duration: ex!.duration * (progress / 100),
+            calories: ex!.calories * (progress / 100),
+            date: new Date(),
+            state: 'cancelled',
+          });
+        }
+        this.store.dispatch(new Training.StopTraining());
       });
-    }
-    this.store.dispatch(new Training.StopTraining());
   }
 
   getRunningExercise() {
