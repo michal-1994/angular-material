@@ -14,8 +14,6 @@ import * as fromTraining from './training.reducer';
 export class TrainingService {
   exercises$: Observable<Exercise[]> | undefined;
 
-  private runningExercise: Exercise | undefined | null;
-
   constructor(
     private db: Firestore,
     private uiservice: UIService,
@@ -60,13 +58,11 @@ export class TrainingService {
       .select(fromTraining.getActiveTraining)
       .pipe(take(1))
       .subscribe((ex) => {
-        if (this.runningExercise) {
-          this.addDataToDatabase({
-            ...ex!,
-            date: new Date(),
-            state: 'completed',
-          });
-        }
+        this.addDataToDatabase({
+          ...ex!,
+          date: new Date(),
+          state: 'completed',
+        });
         this.store.dispatch(new Training.StopTraining());
       });
   }
@@ -76,21 +72,15 @@ export class TrainingService {
       .select(fromTraining.getActiveTraining)
       .pipe(take(1))
       .subscribe((ex) => {
-        if (this.runningExercise) {
-          this.addDataToDatabase({
-            ...ex!,
-            duration: ex!.duration * (progress / 100),
-            calories: ex!.calories * (progress / 100),
-            date: new Date(),
-            state: 'cancelled',
-          });
-        }
+        this.addDataToDatabase({
+          ...ex!,
+          duration: ex!.duration * (progress / 100),
+          calories: ex!.calories * (progress / 100),
+          date: new Date(),
+          state: 'cancelled',
+        });
         this.store.dispatch(new Training.StopTraining());
       });
-  }
-
-  getRunningExercise() {
-    return { ...this.runningExercise };
   }
 
   async fetchCompletedOrCancelledExercises() {
