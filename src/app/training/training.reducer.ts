@@ -69,7 +69,7 @@ export const getFinishedExercises = createSelector(
   (state: TrainingState) => state.finishedExercises
 );
 
-export const getActiveTraining = createSelector(
+export const getIsTraining = createSelector(
   getTrainingState,
-  (state: TrainingState) => state.activeTraining
+  (state: TrainingState) => state.activeTraining != null
 );
