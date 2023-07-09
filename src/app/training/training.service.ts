@@ -1,24 +1,19 @@
 import { Firestore, collection } from '@angular/fire/firestore';
 import { doc, setDoc, getDocs } from 'firebase/firestore';
-import { Subject, Observable, take } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Observable, take } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { Exercise } from './exercise.model';
 import { UIService } from '../shared/ui.service';
 import * as UI from '../shared/ui.actions';
 import * as Training from './training.actions';
 import * as fromTraining from './training.reducer';
-import { Store } from '@ngrx/store';
 
 @Injectable()
 export class TrainingService {
-  exerciseChanged = new Subject<Exercise | null>();
-  exercisesChanged = new Subject<Exercise[] | null>();
-  finishedExercisesChanged = new Subject<Exercise[]>();
-
   exercises$: Observable<Exercise[]> | undefined;
 
-  private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | undefined | null;
 
   constructor(
@@ -52,7 +47,6 @@ export class TrainingService {
           null,
           3000
         );
-        this.exercisesChanged.next(null);
         console.error(error);
       });
   }

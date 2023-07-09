@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthData } from './auth-data.model';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { UIService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
+
+import { AuthData } from './auth-data.model';
+import { UIService } from '../shared/ui.service';
 import * as fromRoot from '../app.reducer';
 import * as UI from '../shared/ui.actions';
 import * as AuthActions from '../auth/auth.actions';
