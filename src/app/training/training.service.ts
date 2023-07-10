@@ -94,6 +94,8 @@ export class TrainingService {
             name: doc.data()['name'],
             duration: doc.data()['duration'],
             calories: doc.data()['calories'],
+            date: doc.data()['date']['seconds'],
+            state: doc.data()['state'],
           });
         });
 
